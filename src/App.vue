@@ -25,6 +25,19 @@ interface Message {
 @Component
 export default class App extends Vue {
   mounted(): void {
+    const eventSource = new EventSource("http://localhost:1234/messages");
+
+    eventSource.onmessage = (e) => {
+      const messages: string[] = JSON.parse(e.data).messages;
+
+      messages.forEach((message: string) => {
+        this.createText({
+          id: new Date().getTime(),
+          message,
+        });
+      });
+    };
+
     new Array(20).fill(0).forEach((item, index) => {
       this.createText({
         id: index,
